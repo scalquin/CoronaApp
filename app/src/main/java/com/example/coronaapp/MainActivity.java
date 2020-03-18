@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                 String [] country2 = country[1].split(" ");
                                 String country3 = country2[0].replace("\""," ");
 
-                                String [] lastupdate = parts[2].split("T");
+                                String [] lastupdate = parts[2].split("M|T|W|F|S");
                                 String [] fecha = lastupdate[0].split(":");
                                 String fechalimpia = fecha[1].replace("\"","");
                                 String horalimpia = lastupdate[1].replace("\"","");
