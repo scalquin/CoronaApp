@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     TextView txt3;
     TextView txt4;
     TextView txt5;
+    TextView txt6;
+    TextView txt7;
+    TextView txt8;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,13 +39,16 @@ public class MainActivity extends AppCompatActivity {
         txt3 = findViewById(R.id.txt3);
         txt4 = findViewById(R.id.txt4);
         txt5 = findViewById(R.id.txt5);
+        txt6 = findViewById(R.id.txt6);
+        txt7 = findViewById(R.id.txt7);
+        txt8 = findViewById(R.id.txt8);
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats?country=Chile")
-                .addHeader("x-rapidapi-host", "covid-19-coronavirus-statistics.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "c5a5521db8mshfe954d5f5887fbfp1a56e8jsn7066f90adde4")
+                .url("https://coronavirus-19-api.herokuapp.com/countries/Chile")
+                //.addHeader("x-rapidapi-host", "covid-19-coronavirus-statistics.p.rapidapi.com")
+                //.addHeader("x-rapidapi-key", "c5a5521db8mshfe954d5f5887fbfp1a56e8jsn7066f90adde4")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -61,41 +67,44 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 JSONObject  json = new JSONObject(myResponse);
-                                JSONArray lista = new JSONArray();
-                                lista = json.getJSONObject("data").getJSONArray("covid19Stats");
+                                String data = json.toString();
+                                String [] parts = data.split(",");
 
-                                ArrayList<String> array = new ArrayList<>();
-                                if (lista !=null){
-                                    for (int i = 0; i<lista.length(); i++){
-                                        array.add(lista.getString(i));
-                                    }
-                                }
-                                String asd = array.get(0);
+                                String [] contry = parts[0].split(":");
+                                String countrydef = contry[1].replace("\"","");
+                                System.out.println("Pais: "+countrydef);
 
-                                String [] parts = asd.split(",");
+                                String [] cases = parts[1].split(":");
+                                System.out.println("Casos: "+cases[1]);
 
-                                String [] country = parts[1].split(":");
-                                String [] country2 = country[1].split(" ");
-                                String country3 = country2[0].replace("\""," ");
+                                String [] todayCases = parts[2].split(":");
+                                System.out.println("Casos hoy "+todayCases[1]);
 
-                                String [] lastupdate = parts[2].split("M|T|W|F|S");
-                                String [] fecha = lastupdate[0].split(":");
-                                String fechalimpia = fecha[1].replace("\"","");
-                                String horalimpia = lastupdate[1].replace("\"","");
+                                String [] deaths = parts[3].split(":");
+                                System.out.println("Muertes "+deaths[1]);
 
-                                String [] confirmed = parts[3].split(":");
-
-                                String [] deaths = parts[4].split(":");
+                                String [] todayDeaths = parts[4].split(":");
+                                System.out.println("Muertes hoy "+todayCases[1]);
 
                                 String [] recovered = parts[5].split(":");
-                                String recovered2 = recovered[1].replace("}"," ");
+                                System.out.println("Recuperaciones "+recovered[1]);
 
-                                //txt.setText(json.getJSONObject("data").getJSONArray("covid19Stats"));
-                                txt.setText("País: "+country3);
-                                txt2.setText("Casos confirmados: "+confirmed[1]);
-                                txt3.setText("Muertes: "+deaths[1]);
-                                txt4.setText("Recuperaciones: "+recovered2);
-                                txt5.setText("Última Actualización: "+fechalimpia+" "+horalimpia);
+                                String [] activos = parts[6].split(":");
+                                System.out.println(activos[1]);
+
+                                String [] criticos = parts[7].split(":");
+                                String criticosdef = criticos[1].toString().replace("}","");
+                                System.out.println("Criticos: "+criticosdef);
+
+                                txt.setText("Pais: "+countrydef);
+                                txt2.setText("Casos: "+cases[1]);
+                                txt3.setText("Casos hoy: "+todayCases[1]);
+                                txt4.setText("Fallecidos: "+deaths[1]);
+                                txt5.setText("Fallecidos hoy: "+todayDeaths[1]);
+                                txt6.setText("Recuperados: "+recovered[1]);
+                                txt7.setText("Casos Activos: "+activos[1]);
+                                txt8.setText("Casos Criticos: "+criticosdef);
+
                             }catch (JSONException e){
                                 e.printStackTrace();
                             }
